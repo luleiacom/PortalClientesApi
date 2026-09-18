@@ -25,8 +25,8 @@ API REST desarrollada en **.NET 10** con **Entity Framework Core** y **SQL Serve
 4. Ejecutá el proyecto (`F5` en Visual Studio, o `dotnet run`)
 5. Accedé a `https://localhost:<puerto>/swagger`
 
-## Próximas mejoras
+## Funcionalidades adicionales
 
-- Endpoint OData para consultas avanzadas
-- Portal web conectado a la API
-- Automatización asistida por IA
+- **Endpoint OData** (`/odata/ClientesOData`) para consultas avanzadas con filtros, ordenamiento y selección de campos
+- **Portal web** conectado a la API en tiempo real — repositorio separado: [portal-clientes-frontend](https://github.com/luleiacom/portal-clientes-frontend)
+- **Automatización asistida por IA**: al crear un pedido, se genera automáticamente un mensaje de confirmación personalizado usando un modelo de lenguaje (Groq API)
