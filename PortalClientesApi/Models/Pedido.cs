@@ -16,5 +16,8 @@ namespace PortalClientesApi.Models
         // Relación con Cliente
         public int ClienteId { get; set; }
         public Cliente? Cliente { get; set; }
+        public string? MensajeConfirmacion { get; set; }
+        public string? NotaIA { get; set; }
+        public string? PrioridadIA { get; set; }
     }
 }

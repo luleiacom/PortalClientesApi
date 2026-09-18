@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using PortalClientesApi.Data;
 using PortalClientesApi.Models;
+using PortalClientesApi.Services;
 
 public static class PedidoEndpoints
 {
@@ -42,11 +43,34 @@ public static class PedidoEndpoints
         })
         .WithName("UpdatePedido");
 
-        group.MapPost("/", async (Pedido pedido, AppDbContext db) =>
+        group.MapPost("/", async (Pedido pedido, AppDbContext db, GroqService groqService) =>
         {
+            var cliente = await db.Clientes.FindAsync(pedido.ClienteId);
+
+            if (cliente != null)
+            {
+                try
+                {
+                    pedido.MensajeConfirmacion = await groqService.GenerarMensajeConfirmacionAsync(
+                        cliente.Nombre, pedido.Total);
+
+                    var (nota, prioridad) = await groqService.AnalizarPedidoAsync(
+                        cliente.Nombre, pedido.Total);
+
+                    pedido.NotaIA = nota;
+                    pedido.PrioridadIA = prioridad;
+                }
+                catch (Exception ex)
+                {
+                    pedido.MensajeConfirmacion = $"ERROR DEBUG: {ex.Message}";
+                    pedido.NotaIA = "No se pudo generar (error de IA).";
+                    pedido.PrioridadIA = "Normal";
+                }
+            }
+
             db.Pedidos.Add(pedido);
             await db.SaveChangesAsync();
-            return TypedResults.Created($"/api/Pedido/{pedido.Id}",pedido);
+            return TypedResults.Created($"/api/Pedido/{pedido.Id}", pedido);
         })
         .WithName("CreatePedido");
 
